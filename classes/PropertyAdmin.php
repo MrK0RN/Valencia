@@ -104,17 +104,19 @@ class PropertyAdmin
 
         // Создаем директорию если не существует
         if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0775, true)) {
+            if (!mkdir($uploadDir, 0777, true)) {
                 throw new Exception('Не удалось создать директорию для загрузки: ' . $uploadDir);
             }
-            // Пытаемся установить права на запись (если возможно)
-            @chmod($uploadDir, 0775);
+            // Устанавливаем максимальные права на запись
+            @chmod($uploadDir, 0777);
         }
 
         // Проверяем права на запись в директорию
         if (!is_writable($uploadDir)) {
-            // Пытаемся исправить права
-            @chmod($uploadDir, 0775);
+            // Пытаемся исправить права - устанавливаем максимальные права
+            @chmod($uploadDir, 0777);
+            // Также пытаемся установить права на все поддиректории
+            @chmod(dirname($uploadDir), 0777);
             if (!is_writable($uploadDir)) {
                 throw new Exception('Директория для загрузки недоступна для записи: ' . $uploadDir . '. Проверьте права доступа и владельца директории.');
             }

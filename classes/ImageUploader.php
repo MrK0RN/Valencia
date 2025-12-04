@@ -244,27 +244,29 @@ class ImageUploader
 
         // Создаем директории если не существуют
         if (!is_dir($baseDir)) {
-            if (!mkdir($baseDir, 0775, true)) {
+            if (!mkdir($baseDir, 0777, true)) {
                 throw new Exception('Не удалось создать директорию для загрузки: ' . $baseDir);
             }
-            @chmod($baseDir, 0775);
+            @chmod($baseDir, 0777);
         }
         if (!is_dir($thumbBaseDir)) {
-            if (!mkdir($thumbBaseDir, 0775, true)) {
+            if (!mkdir($thumbBaseDir, 0777, true)) {
                 throw new Exception('Не удалось создать директорию для превью: ' . $thumbBaseDir);
             }
-            @chmod($thumbBaseDir, 0775);
+            @chmod($thumbBaseDir, 0777);
         }
 
-        // Проверяем права на запись
+        // Проверяем права на запись и устанавливаем максимальные права
         if (!is_writable($baseDir)) {
-            @chmod($baseDir, 0775);
+            @chmod($baseDir, 0777);
+            @chmod(dirname($baseDir), 0777);
             if (!is_writable($baseDir)) {
                 throw new Exception('Директория для загрузки недоступна для записи: ' . $baseDir);
             }
         }
         if (!is_writable($thumbBaseDir)) {
-            @chmod($thumbBaseDir, 0775);
+            @chmod($thumbBaseDir, 0777);
+            @chmod(dirname($thumbBaseDir), 0777);
             if (!is_writable($thumbBaseDir)) {
                 throw new Exception('Директория для превью недоступна для записи: ' . $thumbBaseDir);
             }

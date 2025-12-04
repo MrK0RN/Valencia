@@ -46,16 +46,16 @@ echo -e "${GREEN}✓ Docker compose запущен${NC}"
 
 # Шаг 5: Исправление прав на директорию uploads
 echo -e "${YELLOW}[5/5] Установка прав на директорию uploads...${NC}"
-# Создаем директории если их нет
+# Создаем директории если их нет локально (для бэкапов)
 mkdir -p uploads/properties/thumbs
 
-# Исправляем права в контейнере
+# Исправляем права в контейнере (entrypoint должен это делать, но на всякий случай)
 docker compose exec -T web mkdir -p /var/www/html/uploads/properties/thumbs 2>/dev/null || true
 docker compose exec -T web chown -R www-data:www-data /var/www/html/uploads 2>/dev/null || true
-docker compose exec -T web chmod -R 775 /var/www/html/uploads 2>/dev/null || true
+docker compose exec -T web chmod -R 777 /var/www/html/uploads 2>/dev/null || true
 
-# Также исправляем права локально (на случай если используется volume)
-chmod -R 775 uploads 2>/dev/null || true
+# Также исправляем права локально (на случай если используется bind mount)
+chmod -R 777 uploads 2>/dev/null || true
 
 echo -e "${GREEN}✓ Права установлены${NC}"
 

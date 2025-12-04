@@ -32,6 +32,10 @@ RUN echo "<VirtualHost *:80>\n\
 # Копируем файлы проекта
 COPY . /var/www/html/
 
+# Копируем entrypoint скрипт
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Создаем директории для загрузки файлов
 RUN mkdir -p /var/www/html/uploads/properties/thumbs
 
@@ -39,10 +43,11 @@ RUN mkdir -p /var/www/html/uploads/properties/thumbs
 RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
-    && chmod -R 775 /var/www/html/uploads \
+    && chmod -R 777 /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/uploads
 
 WORKDIR /var/www/html
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+

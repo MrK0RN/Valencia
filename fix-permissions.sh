@@ -17,20 +17,20 @@ echo -e "${YELLOW}Создание директорий...${NC}"
 mkdir -p uploads/properties/thumbs
 echo -e "${GREEN}✓ Директории созданы${NC}"
 
-# Исправляем права локально
+# Исправляем права локально (максимальные права для записи)
 echo -e "${YELLOW}Установка прав локально...${NC}"
-chmod -R 775 uploads
-echo -e "${GREEN}✓ Права установлены локально${NC}"
+chmod -R 777 uploads
+echo -e "${GREEN}✓ Права установлены локально (777)${NC}"
 
 # Исправляем права в контейнере (если он запущен)
 if docker compose ps | grep -q "Up"; then
     echo -e "${YELLOW}Установка прав в контейнере...${NC}"
     docker compose exec -T web mkdir -p /var/www/html/uploads/properties/thumbs 2>/dev/null || true
     docker compose exec -T web chown -R www-data:www-data /var/www/html/uploads 2>/dev/null || true
-    docker compose exec -T web chmod -R 775 /var/www/html/uploads 2>/dev/null || true
-    echo -e "${GREEN}✓ Права установлены в контейнере${NC}"
+    docker compose exec -T web chmod -R 777 /var/www/html/uploads 2>/dev/null || true
+    echo -e "${GREEN}✓ Права установлены в контейнере (777)${NC}"
 else
-    echo -e "${YELLOW}Контейнер не запущен, права будут установлены при следующем запуске${NC}"
+    echo -e "${YELLOW}Контейнер не запущен, права будут установлены при следующем запуске через entrypoint${NC}"
 fi
 
 echo -e "\n${GREEN}=== Готово ===${NC}"
