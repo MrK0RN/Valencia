@@ -104,14 +104,20 @@ class PropertyAdmin
 
         // Создаем директорию если не существует
         if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0755, true)) {
+            if (!mkdir($uploadDir, 0775, true)) {
                 throw new Exception('Не удалось создать директорию для загрузки: ' . $uploadDir);
             }
+            // Пытаемся установить права на запись (если возможно)
+            @chmod($uploadDir, 0775);
         }
 
         // Проверяем права на запись в директорию
         if (!is_writable($uploadDir)) {
-            throw new Exception('Директория для загрузки недоступна для записи: ' . $uploadDir);
+            // Пытаемся исправить права
+            @chmod($uploadDir, 0775);
+            if (!is_writable($uploadDir)) {
+                throw new Exception('Директория для загрузки недоступна для записи: ' . $uploadDir . '. Проверьте права доступа и владельца директории.');
+            }
         }
 
         $skippedFiles = [];

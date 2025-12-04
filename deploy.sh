@@ -21,19 +21,12 @@ docker compose down || {
 }
 echo -e "${GREEN}✓ Docker compose остановлен${NC}"
 
-# Шаг 2: Удаление образов
-echo -e "${YELLOW}[2/4] Удаление старых образов...${NC}"
-# Удаляем образы, связанные с проектом
-docker compose down --rmi all --volumes --remove-orphans 2>/dev/null || true
-
-# Также удаляем образы по имени проекта (если есть)
-PROJECT_NAME=$(basename "$(pwd)" | tr '[:upper:]' '[:lower:]')
-docker images | grep "${PROJECT_NAME}" | awk '{print $3}' | xargs -r docker rmi -f 2>/dev/null || true
-
-# Удаляем образы valencia (если есть)
-docker images | grep "valencia" | awk '{print $3}' | xargs -r docker rmi -f 2>/dev/null || true
-
-echo -e "${GREEN}✓ Старые образы удалены${NC}"
+# Шаг 2: Удаление образа веб-сервера (БД не трогаем)
+echo -e "${YELLOW}[2/4] Удаление старого образа веб-сервера...${NC}"
+# Удаляем только локально собранные образы (веб-сервер), не трогая официальные образы (postgres) и volumes
+# Флаг --rmi local удаляет только образы, собранные локально (build), не трогая образы из репозитория (postgres:15-alpine)
+docker compose down --rmi local --remove-orphans 2>/dev/null || true
+echo -e "${GREEN}✓ Старый образ веб-сервера удален (БД и volumes сохранены)${NC}"
 
 # Шаг 3: Git pull
 echo -e "${YELLOW}[3/4] Обновление кода из git...${NC}"
@@ -44,12 +37,27 @@ fi
 echo -e "${GREEN}✓ Код обновлен${NC}"
 
 # Шаг 4: Запуск docker compose с пересборкой
-echo -e "${YELLOW}[4/4] Запуск docker compose с пересборкой образов...${NC}"
+echo -e "${YELLOW}[4/5] Запуск docker compose с пересборкой образов...${NC}"
 docker compose up -d --build || {
     echo -e "${RED}Ошибка при запуске docker compose${NC}"
     exit 1
 }
 echo -e "${GREEN}✓ Docker compose запущен${NC}"
+
+# Шаг 5: Исправление прав на директорию uploads
+echo -e "${YELLOW}[5/5] Установка прав на директорию uploads...${NC}"
+# Создаем директории если их нет
+mkdir -p uploads/properties/thumbs
+
+# Исправляем права в контейнере
+docker compose exec -T web mkdir -p /var/www/html/uploads/properties/thumbs 2>/dev/null || true
+docker compose exec -T web chown -R www-data:www-data /var/www/html/uploads 2>/dev/null || true
+docker compose exec -T web chmod -R 775 /var/www/html/uploads 2>/dev/null || true
+
+# Также исправляем права локально (на случай если используется volume)
+chmod -R 775 uploads 2>/dev/null || true
+
+echo -e "${GREEN}✓ Права установлены${NC}"
 
 # Показываем статус
 echo -e "\n${GREEN}=== Процесс обновления завершен ===${NC}"
