@@ -70,6 +70,27 @@ class PropertyAdmin
     }
 
     /**
+     * Получить сообщение об ошибке загрузки
+     * 
+     * @param int $errorCode Код ошибки
+     * @return string Сообщение об ошибке
+     */
+    protected static function getUploadErrorMessage(int $errorCode): string
+    {
+        $messages = [
+            UPLOAD_ERR_INI_SIZE => 'Файл превышает максимальный размер, разрешенный в php.ini',
+            UPLOAD_ERR_FORM_SIZE => 'Файл превышает максимальный размер, указанный в форме',
+            UPLOAD_ERR_PARTIAL => 'Файл был загружен частично',
+            UPLOAD_ERR_NO_FILE => 'Файл не был загружен',
+            UPLOAD_ERR_NO_TMP_DIR => 'Отсутствует временная папка',
+            UPLOAD_ERR_CANT_WRITE => 'Не удалось записать файл на диск',
+            UPLOAD_ERR_EXTENSION => 'Загрузка файла была остановлена расширением PHP',
+        ];
+
+        return $messages[$errorCode] ?? 'Неизвестная ошибка (код: ' . $errorCode . ')';
+    }
+
+    /**
      * Загрузка фотографий
      * 
      * @param array $photos Массив файлов ($_FILES) или массив путей к файлам
@@ -83,12 +104,36 @@ class PropertyAdmin
 
         // Создаем директорию если не существует
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            if (!mkdir($uploadDir, 0755, true)) {
+                throw new Exception('Не удалось создать директорию для загрузки: ' . $uploadDir);
+            }
         }
 
-        foreach ($photos as $photo) {
+        // Проверяем права на запись в директорию
+        if (!is_writable($uploadDir)) {
+            throw new Exception('Директория для загрузки недоступна для записи: ' . $uploadDir);
+        }
+
+        $skippedFiles = [];
+        foreach ($photos as $index => $photo) {
             // Если это массив из $_FILES
             if (isset($photo['tmp_name']) && is_uploaded_file($photo['tmp_name'])) {
+                // Проверка ошибок загрузки
+                if (isset($photo['error']) && $photo['error'] !== UPLOAD_ERR_OK) {
+                    $errorMsg = self::getUploadErrorMessage($photo['error']);
+                    throw new Exception('Ошибка загрузки файла ' . ($photo['name'] ?? 'unknown') . ': ' . $errorMsg);
+                }
+
+                // Проверка существования временного файла
+                if (!file_exists($photo['tmp_name'])) {
+                    throw new Exception('Временный файл не найден: ' . $photo['tmp_name']);
+                }
+
+                // Проверка прав на запись в директорию
+                if (!is_writable($uploadDir)) {
+                    throw new Exception('Директория для загрузки недоступна для записи: ' . $uploadDir);
+                }
+
                 // Валидация типа файла
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mimeType = finfo_file($finfo, $photo['tmp_name']);
@@ -110,7 +155,18 @@ class PropertyAdmin
 
                 // Перемещаем файл
                 if (!move_uploaded_file($photo['tmp_name'], $filepath)) {
-                    throw new Exception('Ошибка загрузки файла: ' . $photo['name']);
+                    $errorDetails = [];
+                    if (!file_exists($photo['tmp_name'])) {
+                        $errorDetails[] = 'временный файл не существует';
+                    }
+                    if (!is_writable($uploadDir)) {
+                        $errorDetails[] = 'директория недоступна для записи';
+                    }
+                    if (file_exists($filepath)) {
+                        $errorDetails[] = 'файл назначения уже существует';
+                    }
+                    $details = !empty($errorDetails) ? ' (' . implode(', ', $errorDetails) . ')' : '';
+                    throw new Exception('Ошибка загрузки файла: ' . $photo['name'] . $details);
                 }
 
                 $uploadedPaths[] = self::$photosDir . $filename;
@@ -127,6 +183,17 @@ class PropertyAdmin
 
                 $uploadedPaths[] = self::$photosDir . $filename;
             }
+            else {
+                // Файл не был обработан - логируем для отладки
+                $fileName = is_array($photo) && isset($photo['name']) ? $photo['name'] : (is_string($photo) ? $photo : 'unknown');
+                $skippedFiles[] = $fileName;
+                error_log("PropertyAdmin::uploadPhotos() skipped file: " . $fileName . " (index: $index)");
+            }
+        }
+
+        // Если были пропущены файлы, но мы ожидали их обработать, выводим предупреждение
+        if (!empty($skippedFiles) && empty($uploadedPaths)) {
+            throw new Exception('Не удалось обработать ни одного файла. Пропущенные файлы: ' . implode(', ', $skippedFiles));
         }
 
         return $uploadedPaths;
