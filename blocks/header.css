@@ -1,0 +1,388 @@
+.header {
+    align-self: stretch;
+    padding: clamp(15px, 2vw, 20px) clamp(20px, 8vw, 370px);
+    background: #F0EBE6;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 10px);
+    display: flex;
+    position: relative;
+}
+
+.frame-4 {
+    width: 100%;
+    max-width: 1180px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(15px, 2vw, 20px);
+    margin: 0 auto;
+}
+
+.frame-3 {
+    justify-content: flex-start;
+    align-items: center;
+    gap: clamp(15px, 2.5vw, 40px);
+    display: flex;
+}
+
+.logo {
+    justify-content: flex-start;
+    align-items: center;
+    gap: clamp(6px, 1vw, 8px);
+    display: flex;
+}
+
+.icon-feather {
+    width: clamp(20px, 2.5vw, 24px);
+    height: clamp(20px, 2.5vw, 24px);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.contacts {
+    justify-content: flex-start;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 20px);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.frame-5 {
+    width: 100%;
+    max-width: 1180px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: clamp(15px, 2vw, 20px);
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+}
+
+.catalog-btn {
+    padding: clamp(6px, 1vw, 8px) clamp(16px, 2vw, 20px);
+    border-radius: 10px;
+    outline: 1px #60724F solid;
+    outline-offset: -1px;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(6px, 1vw, 8px);
+    display: flex;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    min-height: clamp(28px, 3.5vw, 38px);
+    box-sizing: border-box;
+}
+
+.catalog-btn:hover {
+    background-color: rgba(96, 114, 79, 0.05);
+}
+
+.menu {
+    flex: 1;
+    min-width: 200px;
+    padding: clamp(6px, 1vw, 8px) clamp(15px, 2.5vw, 40px);
+    overflow: hidden;
+    border-radius: 10px;
+    outline: 1px #60724F solid;
+    outline-offset: -1px;
+    justify-content: flex-start;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(8px, 1.5vw, 12px);
+    min-height: clamp(28px, 3.5vw, 38px);
+    box-sizing: border-box;
+}
+
+.divider {
+    width: 1px;
+    height: clamp(14px, 2vw, 18px);
+    background: #60724F;
+    opacity: 0.3;
+    flex-shrink: 0;
+    margin: 0 clamp(4px, 0.5vw, 8px);
+}
+
+.menu-item {
+    color: #0D0D0D;
+    font-size: clamp(12px, 1.6vw, 16px);
+    font-weight: 400;
+    line-height: clamp(16px, 2.5vw, 22px);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+}
+
+.menu-item:hover {
+    color: #60724F;
+}
+
+.logo-text {
+    color: black;
+    font-size: clamp(14px, 2vw, 18px);
+    font-weight: 700;
+    line-height: clamp(17px, 2.5vw, 21.6px);
+    white-space: nowrap;
+}
+
+.contact-text {
+    display: flex;
+    align-items: center;
+    gap: clamp(5px, 0.8vw, 8px);
+    text-align: center;
+    color: #60724F;
+    font-size: clamp(14px, 2vw, 18px);
+    font-weight: 700;
+    line-height: clamp(17px, 2.5vw, 21.6px);
+    white-space: nowrap;
+}
+
+.catalog-text {
+    color: #0D0D0D;
+    font-size: clamp(12px, 1.6vw, 16px);
+    font-weight: 700;
+    line-height: clamp(16px, 2.5vw, 22px);
+    white-space: nowrap;
+}
+
+/* Кнопка гамбургера */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+    gap: 5px;
+}
+
+.hamburger-line {
+    width: 100%;
+    height: 3px;
+    background: #60724F;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-btn:hover .hamburger-line {
+    background: #0D0D0D;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Медиа-запросы для header */
+@media (max-width: 1024px) {
+    .menu {
+        justify-content: center;
+    }
+    
+    .divider {
+        height: clamp(14px, 2vw, 18px);
+        margin: 0 clamp(3px, 0.4vw, 6px);
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: clamp(12px, 2vw, 15px) clamp(20px, 8vw, 370px);
+        gap: clamp(10px, 2vw, 12px);
+    }
+    
+    .frame-4 {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: clamp(12px, 2vw, 15px);
+    }
+    
+    .frame-3 {
+        justify-content: flex-start;
+        width: auto;
+    }
+    
+    .logo {
+        gap: 0;
+    }
+    
+    .logo-text {
+        display: none;
+    }
+    
+    .contacts {
+        width: auto;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        gap: 0;
+    }
+    
+    .contacts .btn {
+        display: none;
+    }
+    
+    .contact-text {
+        font-size: clamp(13px, 2.5vw, 16px);
+    }
+    
+    .frame-5 {
+        flex-direction: row;
+        align-items: center;
+        gap: clamp(8px, 1.5vw, 12px);
+        width: 100%;
+    }
+    
+    .catalog-btn {
+        flex: 1;
+        min-width: 0;
+        max-width: calc(100% - clamp(44px, 5.5vw, 52px));
+        justify-content: center;
+        padding: clamp(14px, 2vw, 16px) clamp(18px, 2.5vw, 20px);
+        height: clamp(44px, 5.5vw, 52px);
+    }
+    
+    .hamburger-btn {
+        display: flex;
+        flex-shrink: 0;
+        width: clamp(32px, 4vw, 40px);
+        height: clamp(44px, 5.5vw, 52px);
+        min-width: clamp(32px, 4vw, 40px);
+        align-items: center;
+        justify-content: center;
+        padding: clamp(6px, 1vw, 10px);
+        border-radius: 10px;
+        outline: 1px #60724F solid;
+        outline-offset: -1px;
+        background: transparent;
+        transition: background-color 0.2s ease;
+    }
+    
+    .hamburger-btn:hover {
+        background-color: rgba(96, 114, 79, 0.05);
+    }
+    
+    .menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: #F0EBE6;
+        border-radius: 0;
+        outline: none;
+        border-top: 1px solid #60724F;
+        flex-direction: column;
+        padding: 20px;
+        gap: 0;
+        z-index: 100;
+        margin-top: 10px;
+    }
+    
+    .menu.active {
+        display: flex;
+    }
+    
+    .divider {
+        display: none;
+    }
+    
+    .menu-item {
+        width: 100%;
+        text-align: left;
+        padding: 12px 0;
+        font-size: clamp(14px, 2vw, 16px);
+        border-bottom: 1px solid rgba(96, 114, 79, 0.1);
+    }
+    
+    .menu-item:last-child {
+        border-bottom: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px clamp(20px, 8vw, 370px);
+        gap: 8px;
+    }
+    
+    .frame-4 {
+        gap: 10px;
+    }
+    
+    .logo {
+        gap: 0;
+    }
+    
+    .contacts {
+        gap: 0;
+    }
+    
+    .contact-text {
+        font-size: clamp(12px, 3vw, 14px);
+    }
+    
+    .frame-5 {
+        gap: 8px;
+    }
+    
+    .catalog-btn {
+        padding: 12px 16px;
+    }
+    
+    .hamburger-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .menu {
+        padding: 15px 12px;
+    }
+    
+    .menu-item {
+        font-size: clamp(13px, 3vw, 14px);
+        padding: 10px 0;
+    }
+    
+    .catalog-text {
+        font-size: clamp(13px, 3vw, 14px);
+    }
+}
+
+.icon-grid {
+    width: 20px;
+    height: 20px;
+    position: relative;
+}
+
+.grid-dot {
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    background: #60724F;
+    border-radius: 1px;
+}
+
+.dot-1 { left: 3px; top: 3px; }
+.dot-2 { left: 3px; top: 11px; }
+.dot-3 { left: 11px; top: 3px; }
+.dot-4 { left: 11px; top: 11px; }
+

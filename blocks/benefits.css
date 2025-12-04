@@ -1,0 +1,67 @@
+.benefits-container {
+    width: 100%;
+    max-width: 1180px;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin: 0 auto;
+    margin-top: clamp(24px, 3vw, 40px);
+}
+
+.benefit {
+    padding: 20px;
+    border-radius: 20px;
+    outline: 1px #60724F solid;
+    outline-offset: -1px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    display: flex;
+}
+
+.benefit-title {
+    align-self: stretch;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    display: inline-flex;
+}
+
+.benefit-desc {
+    align-self: stretch;
+    color: black;
+    font-size: clamp(16px, 2vw, 18px);
+    font-weight: 400;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.bullet-circle img {
+    display: block;
+    object-fit: contain;
+}
+
+/* Медиа-запросы для benefits */
+@media (max-width: 768px) {
+    .benefits-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.icon-globe, .icon-heart, .icon-star {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.icon-globe .vector { background: white; }
+.icon-heart .vector { background: white; }
+.icon-star .vector { background: white; }
+
+/* Отступ между основной частью и кнопкой */
+.section:has(.benefits-container) .btn.btn-large {
+    margin-top: clamp(24px, 3vw, 40px);
+}
+

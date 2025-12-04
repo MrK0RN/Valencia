@@ -1,0 +1,203 @@
+.hero {
+    align-self: stretch;
+    padding: 0 clamp(20px, 8vw, 370px) clamp(40px, 5vw, 60px);
+    background: #F0EBE6;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.hero-text {
+    width: 100%;
+    max-width: 1180px;
+    min-height: 400px;
+    height: clamp(400px, 50vw, 600px);
+    padding: clamp(20px, 3vw, 40px);
+    background: linear-gradient(271deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.80) 100%);
+    overflow: hidden;
+    border-radius: clamp(20px, 3vw, 40px);
+    background-image: url(../assets/img/wp14994042-valencia-4k-wallpapers.png);
+    background-size: cover;
+    background-position: center;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: clamp(30px, 4vw, 60px);
+    display: flex;
+    flex-shrink: 0;
+}
+
+.text-button {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: clamp(20px, 3vw, 40px);
+    display: flex;
+    width: 100%;
+}
+
+.hero-title {
+    align-self: stretch;
+    color: white;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    width: 100%;
+    max-width: 492px;
+    color: white;
+    font-size: clamp(16px, 2vw, 18px);
+    line-height: 1.5;
+}
+
+.bullet-container {
+    justify-content: flex-start;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 20px);
+    display: inline-flex;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+/* Медиа-запросы для hero */
+@media (max-width: 1024px) {
+    .bullet-text span {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-text {
+        min-height: 350px;
+    }
+    
+    .bullet-text {
+        white-space: normal;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-text {
+        min-height: clamp(400px, 100vw, 500px);
+        height: clamp(400px, 100vw, 500px);
+        padding: clamp(16px, 4vw, 20px);
+        gap: clamp(20px, 5vw, 30px);
+    }
+    
+    .hero-title {
+        font-size: clamp(22px, 5.5vw, 24px);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(13px, 3.5vw, 14px);
+    }
+    
+    .bullet-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: clamp(12px, 3vw, 16px);
+    }
+    
+    .bullet {
+        width: 100%;
+        padding: clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 16px) clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 12px);
+        gap: clamp(10px, 2.5vw, 12px);
+        border-radius: clamp(14px, 3.5vw, 16px);
+    }
+    
+    .bullet-circle {
+        width: clamp(40px, 10vw, 48px);
+        height: clamp(40px, 10vw, 48px);
+    }
+    
+    .bullet-circle img {
+        width: clamp(22px, 5.5vw, 26px) !important;
+        height: clamp(22px, 5.5vw, 26px) !important;
+    }
+    
+    .bullet-text {
+        font-size: clamp(13px, 3.2vw, 15px);
+        line-height: clamp(16px, 4vw, 18px);
+        white-space: normal;
+    }
+    
+    .bullet-text span {
+        display: inline;
+    }
+    
+    .bullet:last-child .bullet-text span {
+        display: none;
+    }
+}
+
+.bullet {
+    padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px) clamp(8px, 2vw, 12px) clamp(8px, 2vw, 12px);
+    background: #F0EBE6;
+    overflow: hidden;
+    border-radius: clamp(14px, 3vw, 20px);
+    justify-content: center;
+    align-items: center;
+    gap: clamp(8px, 2vw, 12px);
+    display: flex;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.bullet-icon {
+    padding: clamp(3px, 0.5vw, 4px);
+    background: rgba(96, 114, 79, 0.20);
+    border-radius: 100px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: clamp(8px, 1.2vw, 10px);
+    display: flex;
+}
+
+.bullet-circle {
+    width: clamp(40px, 7vw, 60px);
+    height: clamp(40px, 7vw, 60px);
+    background: #60724F;
+    border-radius: 100px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(8px, 1.2vw, 10px);
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.bullet-circle img {
+    display: block;
+    object-fit: contain;
+    width: clamp(24px, 4vw, 32px) !important;
+    height: clamp(24px, 4vw, 32px) !important;
+}
+
+.bullet-text {
+    color: #60724F;
+    font-size: clamp(13px, 2.5vw, 18px);
+    font-weight: 700;
+    line-height: clamp(16px, 3vw, 21.6px);
+    white-space: nowrap;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.bullet-text span {
+    color: black;
+    font-weight: 400;
+}
+
+.icon-house, .icon-shield {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.icon-house .vector { background: white; }
+.icon-shield .vector { background: white; }
+

@@ -1,0 +1,344 @@
+<!-- Featured Listing -->
+<div class="section">
+    <div class="text-content" style="align-items: center;">
+        <div class="section-title">
+            <span style="color: #60724F">Featured &nbsp;</span><span style="color: black"> listing</span>
+        </div>
+        <div class="section-subtitle">
+            Our houses are synonymous of well-being, comfort, and quality of life. In our portfolio you will find luxury properties for sale and for rent in Valencia, with excellent locations, and with designs and services that make them truly unique and special
+        </div>
+    </div>
+    <div class="frame-6">
+        <div class="tab-container">
+            <div class="tab tab-active">
+                <div class="tab-text">See all</div>
+            </div>
+            <div class="tab tab-inactive">
+                <div class="tab-text">Buy</div>
+            </div>
+            <div class="tab tab-inactive">
+                <div class="tab-text">Rent</div>
+            </div>
+        </div>
+        <div class="arrows">
+            <div class="arrow arrow-prev" id="carouselPrev">
+                <div class="arrow-left">
+                    <div class="arrow-vector" style="left: 3.75px; top: 3.75px;"></div>
+                </div>
+            </div>
+            <div class="arrow arrow-next" id="carouselNext">
+                <div class="arrow-left">
+                    <div class="arrow-vector" style="left: 16.25px; top: 16.25px; transform: rotate(-180deg); transform-origin: top left;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="carousel-wrapper">
+        <div class="card-container" id="featuredCarousel">
+            <div class="card">
+                <img class="card-img" src="assets/img/wp14994042-valencia-4k-wallpapers.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Lorem Ipsum</div>
+                    <div class="card-desc">Lorem Ipsum is simply dummy text of the printing and typesetting industry</div>
+                    <div class="card-price">275.000 €</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Buy</div>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="assets/img/wp14994047-valencia-4k-wallpapers.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Lorem Ipsum</div>
+                    <div class="card-desc">Lorem Ipsum is simply dummy text of the printing and typesetting industry</div>
+                    <div class="card-price">275.000 €</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Buy</div>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="assets/img/wp14994051-valencia-4k-wallpapers.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Lorem Ipsum</div>
+                    <div class="card-desc">Lorem Ipsum is simply dummy text of the printing and typesetting industry</div>
+                    <div class="card-price">275.000 €</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Buy</div>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="assets/img/wp14994063-valencia-4k-wallpapers.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Modern Apartment</div>
+                    <div class="card-desc">Beautiful modern apartment with stunning views of Valencia city center</div>
+                    <div class="card-price">320.000 €</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Buy</div>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="assets/img/backiee-114132-landscape.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Luxury Villa</div>
+                    <div class="card-desc">Spacious luxury villa with private garden and pool in prime location</div>
+                    <div class="card-price">1.200 €/month</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Rent</div>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="assets/img/backiee-184611-landscape.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Cozy Studio</div>
+                    <div class="card-desc">Perfect studio apartment for young professionals in the heart of Valencia</div>
+                    <div class="card-price">185.000 €</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Buy</div>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="assets/img/backiee-231876-landscape.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Family Home</div>
+                    <div class="card-desc">Perfect family home with 4 bedrooms, modern kitchen and large terrace</div>
+                    <div class="card-price">850 €/month</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Rent</div>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="assets/img/wallpaperflare.com_wallpaper.png" alt="Property">
+                <div class="card-text">
+                    <div class="card-title">Penthouse Suite</div>
+                    <div class="card-desc">Exclusive penthouse with panoramic city views and rooftop terrace</div>
+                    <div class="card-price">450.000 €</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-text">Buy</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-large">Показать еще</button>
+</div>
+
+<script>
+(function() {
+    function initCarousel() {
+        const carousel = document.getElementById('featuredCarousel');
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+        const carouselWrapper = carousel?.closest('.carousel-wrapper');
+        
+        if (!carousel || !prevBtn || !nextBtn) {
+            // Retry if elements not ready yet
+            setTimeout(initCarousel, 100);
+            return;
+        }
+        
+        let currentIndex = 0;
+        let cardsPerView = 3;
+        let resizeTimeout;
+        let autoPlayInterval = null;
+        let isPaused = false;
+        const autoPlayDelay = 5000; // 5 seconds
+        
+        function getCardsPerView() {
+            const width = window.innerWidth;
+            if (width >= 992) return 3;
+            if (width >= 769) return 2;
+            return 1;
+        }
+        
+        function updateCardsPerView() {
+            const oldCardsPerView = cardsPerView;
+            cardsPerView = getCardsPerView();
+            
+            // Reset index if needed when switching views
+            if (oldCardsPerView !== cardsPerView) {
+                const totalCards = carousel.children.length;
+                const maxIndex = Math.max(0, totalCards - cardsPerView);
+                currentIndex = Math.min(currentIndex, maxIndex);
+            }
+            
+            updateCarousel();
+        }
+        
+        function updateCarousel() {
+            const firstCard = carousel.querySelector('.card');
+            if (!firstCard) return;
+            
+            const cardWidth = firstCard.offsetWidth;
+            const gap = 20;
+            const translateX = -(currentIndex * (cardWidth + gap));
+            carousel.style.transform = `translateX(${translateX}px)`;
+            
+            // Update button states
+            const totalCards = carousel.children.length;
+            const maxIndex = Math.max(0, totalCards - cardsPerView);
+            
+            prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+            prevBtn.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+            
+            nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+            nextBtn.style.pointerEvents = currentIndex >= maxIndex ? 'none' : 'auto';
+        }
+        
+        function goToNext() {
+            const totalCards = carousel.children.length;
+            const maxIndex = Math.max(0, totalCards - cardsPerView);
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+            } else {
+                currentIndex = 0; // Loop back to start
+            }
+            updateCarousel();
+        }
+        
+        function goToPrev() {
+            const totalCards = carousel.children.length;
+            const maxIndex = Math.max(0, totalCards - cardsPerView);
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = maxIndex; // Loop to end
+            }
+            updateCarousel();
+        }
+        
+        function startAutoPlay() {
+            if (autoPlayInterval) return;
+            
+            autoPlayInterval = setInterval(() => {
+                if (!isPaused) {
+                    goToNext();
+                }
+            }, autoPlayDelay);
+        }
+        
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+        
+        function pauseAutoPlay() {
+            isPaused = true;
+        }
+        
+        function resumeAutoPlay() {
+            isPaused = false;
+        }
+        
+        // Button click handlers
+        prevBtn.addEventListener('click', () => {
+            goToPrev();
+            pauseAutoPlay();
+            stopAutoPlay();
+            setTimeout(() => {
+                startAutoPlay();
+                resumeAutoPlay();
+            }, autoPlayDelay * 2);
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            goToNext();
+            pauseAutoPlay();
+            stopAutoPlay();
+            setTimeout(() => {
+                startAutoPlay();
+                resumeAutoPlay();
+            }, autoPlayDelay * 2);
+        });
+        
+        // Pause on hover
+        if (carouselWrapper) {
+            carouselWrapper.addEventListener('mouseenter', () => {
+                pauseAutoPlay();
+            });
+            
+            carouselWrapper.addEventListener('mouseleave', () => {
+                resumeAutoPlay();
+            });
+        }
+        
+        // Pause on touch/interaction
+        let interactionTimeout;
+        function handleInteraction() {
+            pauseAutoPlay();
+            stopAutoPlay();
+            clearTimeout(interactionTimeout);
+            interactionTimeout = setTimeout(() => {
+                startAutoPlay();
+                resumeAutoPlay();
+            }, autoPlayDelay * 2);
+        }
+        
+        carousel.addEventListener('touchstart', handleInteraction);
+        carousel.addEventListener('touchmove', handleInteraction);
+        
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                updateCardsPerView();
+            }, 150);
+        });
+        
+        // Wait for images to load before initializing
+        const images = carousel.querySelectorAll('img');
+        let imagesLoaded = 0;
+        
+        function initialize() {
+            updateCardsPerView();
+            startAutoPlay();
+        }
+        
+        if (images.length === 0) {
+            initialize();
+        } else {
+            images.forEach(img => {
+                if (img.complete) {
+                    imagesLoaded++;
+                } else {
+                    img.addEventListener('load', () => {
+                        imagesLoaded++;
+                        if (imagesLoaded === images.length) {
+                            initialize();
+                        }
+                    });
+                    img.addEventListener('error', () => {
+                        imagesLoaded++;
+                        if (imagesLoaded === images.length) {
+                            initialize();
+                        }
+                    });
+                }
+            });
+            
+            if (imagesLoaded === images.length) {
+                initialize();
+            }
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            stopAutoPlay();
+        });
+    }
+    
+    // Start initialization
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCarousel);
+    } else {
+        initCarousel();
+    }
+})();
+</script>
+

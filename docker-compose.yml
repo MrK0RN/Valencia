@@ -1,0 +1,43 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=valencia_db
+      - DB_USER=valencia_user
+      - DB_PASSWORD=valencia_password
+
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    environment:
+      - POSTGRES_DB=valencia_db
+      - POSTGRES_USER=valencia_user
+      - POSTGRES_PASSWORD=valencia_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U valencia_user -d valencia_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
