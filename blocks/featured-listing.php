@@ -27,11 +27,11 @@ $subtitleText = $isEn
         </div>
     </div>
     <div class="frame-6">
-        <div class="tab-container">
-            <div class="tab tab-active">
-                <div class="tab-text">See all</div>
+            <div class="tab-container">
+                <a class="tab tab-active" href="<?php echo $isEn ? '/en/catalog.php' : '/catalog'; ?>" style="text-decoration:none; color:inherit;">
+                    <div class="tab-text">See all</div>
+                </a>
             </div>
-        </div>
         <div class="arrows">
             <div class="arrow arrow-prev" id="carouselPrev">
                 <div class="arrow-left">

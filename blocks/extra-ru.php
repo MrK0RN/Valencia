@@ -33,7 +33,7 @@
     </div>
 </section>
 
-<section class="content-section hero-surface contact-shell">
+<section id="callback" class="content-section hero-surface contact-shell">
     <div class="content-container">
         <div class="contact-card">
             <div class="contact-info">
