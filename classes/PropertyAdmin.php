@@ -66,6 +66,23 @@ class PropertyAdmin
             $errors[] = 'Некорректный URL видео';
         }
 
+        $proximityFields = [
+            'sea_distance_meters' => 'Расстояние до моря (м)',
+            'sea_distance_minutes' => 'До моря (мин)',
+            'metro_distance_meters' => 'Расстояние до метро (м)',
+            'metro_distance_minutes' => 'До метро (мин)',
+        ];
+
+        foreach ($proximityFields as $field => $label) {
+            if (array_key_exists($field, $data) && $data[$field] !== null && $data[$field] !== '') {
+                if (!is_numeric($data[$field])) {
+                    $errors[] = $label . ' должно быть числом';
+                } elseif ($data[$field] < 0) {
+                    $errors[] = $label . ' не может быть отрицательным';
+                }
+            }
+        }
+
         return $errors;
     }
 

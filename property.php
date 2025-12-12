@@ -4,6 +4,62 @@ require_once __DIR__ . '/classes/Auth.php';
 require_once __DIR__ . '/classes/Session.php';
 require_once __DIR__ . '/classes/Favorite.php';
 
+// Определяем язык интерфейса
+$locale = 'ru';
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+if (isset($_GET['lang']) && $_GET['lang'] === 'en') {
+    $locale = 'en';
+} elseif (strpos($requestUri, '/en/') === 0 || rtrim($requestUri, '/') === '/en') {
+    $locale = 'en';
+}
+
+$translations = [
+    'ru' => [
+        'no_title' => 'Объект недвижимости',
+        'fallback_title' => 'Без названия',
+        'description' => 'Описание',
+        'features' => 'Особенности',
+        'proximity' => 'Близость',
+        'to_sea' => 'До моря',
+        'to_metro' => 'До метро',
+        'contact_us' => 'Связаться с нами',
+        'repair_badge' => 'Ремонт с Wesna Group',
+        'characteristics' => 'Характеристики',
+        'area_total' => 'Общая площадь',
+        'area_living' => 'Жилая площадь',
+        'area_kitchen' => 'Площадь кухни',
+        'rooms' => 'Комнат',
+        'floor' => 'Этаж',
+        'of' => 'из',
+        'per_sqm' => '€/м²',
+        'sqm' => 'м²',
+    ],
+    'en' => [
+        'no_title' => 'Real estate',
+        'fallback_title' => 'No title',
+        'description' => 'Description',
+        'features' => 'Features',
+        'proximity' => 'Proximity',
+        'to_sea' => 'To the sea',
+        'to_metro' => 'To the metro',
+        'contact_us' => 'Contact us',
+        'repair_badge' => 'Renovation by Wesna Group',
+        'characteristics' => 'Characteristics',
+        'area_total' => 'Total area',
+        'area_living' => 'Living area',
+        'area_kitchen' => 'Kitchen area',
+        'rooms' => 'Rooms',
+        'floor' => 'Floor',
+        'of' => 'of',
+        'per_sqm' => '€/m²',
+        'sqm' => 'm²',
+    ],
+];
+
+$t = function (string $key) use ($translations, $locale) {
+    return $translations[$locale][$key] ?? ($translations['ru'][$key] ?? $key);
+};
+
 // Инициализация сессии
 Session::start();
 
@@ -26,6 +82,47 @@ if (!$property || $property->status !== Property::STATUS_ACTIVE) {
 $photos = $property->getPhotos();
 $features = $property->getFeatures();
 $fullInfo = $property->getFullInfo();
+$displayTitle = $property->getLocalizedTitle($locale);
+$displayDescription = $property->getLocalizedDescription($locale);
+$featureLabels = Property::getFeatureLabels($locale);
+$featureIcons = [
+    Property::FEATURE_BALCONY => 'fa-building',
+    Property::FEATURE_PARKING => 'fa-square-parking',
+    Property::FEATURE_ELEVATOR => 'fa-up-down',
+    Property::FEATURE_FURNISHED => 'fa-couch',
+    Property::FEATURE_AIR_CONDITIONING => 'fa-snowflake',
+    Property::FEATURE_HEATING => 'fa-fire',
+    Property::FEATURE_POOL => 'fa-person-swimming',
+    Property::FEATURE_GARDEN => 'fa-seedling',
+    Property::FEATURE_TERRACE => 'fa-umbrella-beach',
+    Property::FEATURE_STORAGE => 'fa-box',
+    Property::FEATURE_AIRZONE => 'fa-wind',
+    Property::FEATURE_CHILDREN_PLAY_AREA => 'fa-child',
+    Property::FEATURE_BUILT_IN_WARDROBES => 'fa-shirt',
+    Property::FEATURE_CLIMALIT => 'fa-window-maximize',
+    Property::FEATURE_FIREPLACE => 'fa-fire',
+    Property::FEATURE_COUNTRY_CLUB => 'fa-flag',
+    Property::FEATURE_OPEN_KITCHEN => 'fa-utensils',
+    Property::FEATURE_WATER_SOFTENER => 'fa-droplet',
+    Property::FEATURE_HOME_AUTOMATION => 'fa-microchip',
+    Property::FEATURE_EXTERIOR => 'fa-house',
+    Property::FEATURE_PRIVATE_GARAGE => 'fa-car-side',
+    Property::FEATURE_LAUNDRY_SPACE => 'fa-shower',
+    Property::FEATURE_SOLAR_PANELS => 'fa-solar-panel',
+    Property::FEATURE_PARQUET => 'fa-border-all',
+    Property::FEATURE_COMMUNAL_POOL => 'fa-person-swimming',
+    Property::FEATURE_PRIVATE_POOL => 'fa-water',
+    Property::FEATURE_PORCH => 'fa-house-chimney',
+    Property::FEATURE_REINFORCED_DOOR => 'fa-door-closed',
+    Property::FEATURE_ELECTRIC_CHARGING_POINT => 'fa-bolt',
+    Property::FEATURE_AEROTHERMAL => 'fa-temperature-half',
+    Property::FEATURE_UNDERFLOOR_HEATING => 'fa-temperature-high',
+    Property::FEATURE_ENSUITE => 'fa-bath',
+    Property::FEATURE_DRESSING_ROOM => 'fa-user',
+    Property::FEATURE_VIDEO_INTERCOM => 'fa-video',
+    Property::FEATURE_MOUNTAIN_VIEW => 'fa-mountain',
+    Property::FEATURE_COMMUNAL_AREA => 'fa-users',
+];
 
 // Загружаем конфигурацию Google Maps
 $mapsConfig = require __DIR__ . '/config/maps.php';
@@ -40,14 +137,15 @@ if ($isAuthenticated && $user) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<?php echo htmlspecialchars($locale); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($property->title ?? 'Объект недвижимости'); ?> - Валенсия</title>
+    <title><?php echo htmlspecialchars($displayTitle ?: $t('no_title')); ?> - <?php echo $locale === 'en' ? 'Valencia' : 'Валенсия'; ?></title>
     <link rel="stylesheet" href="/styles.css?v=<?php echo filemtime(__DIR__ . '/styles.css'); ?>">
     <link rel="stylesheet" href="/blocks/header.css?v=<?php echo filemtime(__DIR__ . '/blocks/header.css'); ?>">
     <link rel="stylesheet" href="/blocks/footer.css?v=<?php echo filemtime(__DIR__ . '/blocks/footer.css'); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -293,17 +391,20 @@ if ($isAuthenticated && $user) {
         }
 
         .feature-bullet-icon {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             background: #60724F;
-            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
             flex-shrink: 0;
+            font-size: 0;
+        }
+
+        .feature-bullet-icon i {
+            font-size: 16px;
+            color: white;
         }
 
         .feature-bullet-text {
@@ -1119,7 +1220,12 @@ if ($isAuthenticated && $user) {
 <body>
     <div class="desktop">
         <!-- Header -->
-        <?php include 'blocks/header.html'; ?>
+        <?php 
+            $headerFile = $locale === 'en' 
+                ? __DIR__ . '/blocks/header-en.html' 
+                : __DIR__ . '/blocks/header.html';
+            include $headerFile;
+        ?>
 
         <!-- Property Section -->
         <div class="section" style="align-items: flex-start;">
@@ -1127,7 +1233,7 @@ if ($isAuthenticated && $user) {
                 <!-- Header -->
                 <div class="property-header">
                     <div class="property-title-wrapper">
-                        <h1 class="property-title"><?php echo htmlspecialchars($property->title ?? 'Без названия'); ?></h1>
+                        <h1 class="property-title"><?php echo htmlspecialchars($displayTitle ?: $t('fallback_title')); ?></h1>
                         <button class="favorite-button <?php echo $isFavorite ? 'active' : ''; ?>" 
                                 id="favoriteButton" 
                                 onclick="handleFavoriteClick()"
@@ -1150,7 +1256,7 @@ if ($isAuthenticated && $user) {
                                 $mainImagePath = $photos[0]['image_path'];
                                 $mainImagePath = (strpos($mainImagePath, '/') === 0) ? $mainImagePath : '/' . $mainImagePath;
                                 ?>
-                                <img id="mainImage" src="<?php echo htmlspecialchars($mainImagePath); ?>" alt="<?php echo htmlspecialchars($property->title ?? 'Property'); ?>">
+                                <img id="mainImage" src="<?php echo htmlspecialchars($mainImagePath); ?>" alt="<?php echo htmlspecialchars($displayTitle ?: $t('fallback_title')); ?>">
                             </div>
                             <?php if (count($photos) > 1): ?>
                                 <div class="gallery-thumbnails">
@@ -1181,38 +1287,38 @@ if ($isAuthenticated && $user) {
                         ?>
                         <?php if ($pricePerSquareMeter !== null): ?>
                             <div class="property-price-per-meter">
-                                <?php echo number_format($pricePerSquareMeter, 0, ',', ' '); ?> €/м²
+                                <?php echo number_format($pricePerSquareMeter, 0, $locale === 'en' ? '.' : ',', $locale === 'en' ? ',' : ' '); ?> <?php echo htmlspecialchars($t('per_sqm')); ?>
                             </div>
                         <?php endif; ?>
-                        <h2>Характеристики</h2>
+                        <h2><?php echo htmlspecialchars($t('characteristics')); ?></h2>
                         <div class="property-params property-params-two-columns">
                             <div class="property-params-column">
                                 <?php if (!empty($property->area_total)): ?>
                                     <div class="param-item">
-                                        <div class="param-label">Общая площадь</div>
+                                        <div class="param-label"><?php echo htmlspecialchars($t('area_total')); ?></div>
                                         <div class="param-value-row">
-                                            <img src="/assets/icons/size.svg" alt="Площадь" class="param-icon">
-                                            <div class="param-value"><?php echo number_format($property->area_total, 1, ',', ' '); ?> м²</div>
+                                            <img src="/assets/icons/size.svg" alt="Area" class="param-icon">
+                                            <div class="param-value"><?php echo number_format($property->area_total, 1, $locale === 'en' ? '.' : ',', $locale === 'en' ? ',' : ' '); ?> <?php echo htmlspecialchars($t('sqm')); ?></div>
                                         </div>
                                     </div>
                                 <?php endif; ?>
                                 
                                 <?php if (!empty($property->area_living)): ?>
                                     <div class="param-item">
-                                        <div class="param-label">Жилая площадь</div>
+                                        <div class="param-label"><?php echo htmlspecialchars($t('area_living')); ?></div>
                                         <div class="param-value-row">
-                                            <img src="/assets/icons/size.svg" alt="Площадь" class="param-icon">
-                                            <div class="param-value"><?php echo number_format($property->area_living, 1, ',', ' '); ?> м²</div>
+                                            <img src="/assets/icons/size.svg" alt="Area" class="param-icon">
+                                            <div class="param-value"><?php echo number_format($property->area_living, 1, $locale === 'en' ? '.' : ',', $locale === 'en' ? ',' : ' '); ?> <?php echo htmlspecialchars($t('sqm')); ?></div>
                                         </div>
                                     </div>
                                 <?php endif; ?>
                                 
                                 <?php if (!empty($property->area_kitchen)): ?>
                                     <div class="param-item">
-                                        <div class="param-label">Площадь кухни</div>
+                                        <div class="param-label"><?php echo htmlspecialchars($t('area_kitchen')); ?></div>
                                         <div class="param-value-row">
-                                            <img src="/assets/icons/kitchen.svg" alt="Кухня" class="param-icon">
-                                            <div class="param-value"><?php echo number_format($property->area_kitchen, 1, ',', ' '); ?> м²</div>
+                                            <img src="/assets/icons/kitchen.svg" alt="Kitchen" class="param-icon">
+                                            <div class="param-value"><?php echo number_format($property->area_kitchen, 1, $locale === 'en' ? '.' : ',', $locale === 'en' ? ',' : ' '); ?> <?php echo htmlspecialchars($t('sqm')); ?></div>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -1221,9 +1327,9 @@ if ($isAuthenticated && $user) {
                             <div class="property-params-column">
                                 <?php if (!empty($property->rooms)): ?>
                                     <div class="param-item">
-                                        <div class="param-label">Комнат</div>
+                                        <div class="param-label"><?php echo htmlspecialchars($t('rooms')); ?></div>
                                         <div class="param-value-row">
-                                            <img src="/assets/icons/plan.svg" alt="Комнаты" class="param-icon">
+                                            <img src="/assets/icons/plan.svg" alt="Rooms" class="param-icon">
                                             <div class="param-value"><?php echo $property->rooms; ?></div>
                                         </div>
                                     </div>
@@ -1231,10 +1337,18 @@ if ($isAuthenticated && $user) {
                                 
                                 <?php if (!empty($property->floor)): ?>
                                     <div class="param-item">
-                                        <div class="param-label">Этаж</div>
+                                        <div class="param-label"><?php echo htmlspecialchars($t('floor')); ?></div>
                                         <div class="param-value-row">
-                                            <img src="/assets/icons/floor.svg" alt="Этаж" class="param-icon">
-                                            <div class="param-value"><?php echo $property->floor; ?><?php echo !empty($property->total_floors) ? ' из ' . $property->total_floors : ''; ?></div>
+                                            <img src="/assets/icons/floor.svg" alt="Floor" class="param-icon">
+                                            <div class="param-value">
+                                                <?php echo $property->floor; ?><?php 
+                                                    if (!empty($property->total_floors)) {
+                                                        echo $locale === 'en' 
+                                                            ? ' ' . $t('of') . ' ' . $property->total_floors 
+                                                            : ' ' . $t('of') . ' ' . $property->total_floors;
+                                                    }
+                                                ?>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -1250,9 +1364,47 @@ if ($isAuthenticated && $user) {
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <?php 
+                        $proximityItems = [];
+                        $unitMeter = $locale === 'en' ? 'm' : 'м';
+                        $unitMinute = $locale === 'en' ? 'min' : 'мин';
+                        $thousandSep = $locale === 'en' ? ',' : ' ';
+                        $decimalSep = $locale === 'en' ? '.' : ',';
+                        if (!empty($property->sea_distance_meters) || !empty($property->sea_distance_minutes)) {
+                            $parts = [];
+                            if (!empty($property->sea_distance_meters)) {
+                                $parts[] = number_format($property->sea_distance_meters, 0, $decimalSep, $thousandSep) . ' ' . $unitMeter;
+                            }
+                            if (!empty($property->sea_distance_minutes)) {
+                                $parts[] = $property->sea_distance_minutes . ' ' . $unitMinute;
+                            }
+                            $proximityItems[] = ['label' => $t('to_sea'), 'value' => implode(' / ', $parts)];
+                        }
+                        if (!empty($property->metro_distance_meters) || !empty($property->metro_distance_minutes)) {
+                            $parts = [];
+                            if (!empty($property->metro_distance_meters)) {
+                                $parts[] = number_format($property->metro_distance_meters, 0, $decimalSep, $thousandSep) . ' ' . $unitMeter;
+                            }
+                            if (!empty($property->metro_distance_minutes)) {
+                                $parts[] = $property->metro_distance_minutes . ' ' . $unitMinute;
+                            }
+                            $proximityItems[] = ['label' => $t('to_metro'), 'value' => implode(' / ', $parts)];
+                        }
+                        ?>
+                        <?php if (!empty($proximityItems)): ?>
+                            <h3 style="margin-top:10px;"><?php echo htmlspecialchars($t('proximity')); ?></h3>
+                            <div class="property-params">
+                                <?php foreach ($proximityItems as $item): ?>
+                                    <div class="param-item">
+                                        <div class="param-label"><?php echo htmlspecialchars($item['label']); ?></div>
+                                        <div class="param-value"><?php echo htmlspecialchars($item['value']); ?></div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                         <div class="property-actions">
                             <button class="btn btn-large" onclick="openContactModal()">
-                                Связаться с нами
+                                <?php echo htmlspecialchars($t('contact_us')); ?>
                             </button>
                             <!--
                             <button class="btn btn-large" onclick="alert('Функция добавления в избранное будет реализована позже')">
@@ -1262,7 +1414,7 @@ if ($isAuthenticated && $user) {
                             <?php if (isset($property->repair_needed) && $property->repair_needed): ?>
                                 <div class="repair-badge">
                                     <img src="/assets/icons/renovation.svg" alt="Ремонт" class="repair-badge-icon">
-                                    <span class="repair-badge-text">Ремонт с Wesna Group</span>
+                                    <span class="repair-badge-text"><?php echo htmlspecialchars($t('repair_badge')); ?></span>
                                     <svg class="repair-badge-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -1277,39 +1429,30 @@ if ($isAuthenticated && $user) {
                     <!-- Left Column: Description + Features -->
                     <div class="property-column property-column-left">
                         <!-- Description -->
-                        <?php if (!empty($property->description)): ?>
+                        <?php if (!empty($displayDescription)): ?>
                             <div class="property-block">
-                                <h2>Описание</h2>
+                                <h2><?php echo htmlspecialchars($t('description')); ?></h2>
                                 <div class="property-description">
-                                    <?php echo nl2br(htmlspecialchars($property->description)); ?>
+                                    <?php echo nl2br(htmlspecialchars($displayDescription)); ?>
                                 </div>
                             </div>
                         <?php endif; ?>
                         
                         <!-- Features -->
                         <?php 
-                        $featureLabels = [
-                            Property::FEATURE_BALCONY => 'Балкон',
-                            Property::FEATURE_PARKING => 'Парковка',
-                            Property::FEATURE_ELEVATOR => 'Лифт',
-                            Property::FEATURE_FURNISHED => 'Мебель',
-                            Property::FEATURE_AIR_CONDITIONING => 'Кондиционер',
-                            Property::FEATURE_HEATING => 'Отопление',
-                            Property::FEATURE_POOL => 'Бассейн',
-                            Property::FEATURE_GARDEN => 'Сад',
-                            Property::FEATURE_TERRACE => 'Терраса',
-                            Property::FEATURE_STORAGE => 'Кладовая',
-                        ];
                         if (!empty($features)): ?>
                             <div class="property-block">
-                                <h2>Особенности</h2>
+                                <h2><?php echo htmlspecialchars($t('features')); ?></h2>
                                 <ul class="features-list-bullets">
                                     <?php foreach ($features as $feature): 
                                         $featureType = $feature['feature_type'];
                                         $featureLabel = $featureLabels[$featureType] ?? ucfirst(str_replace('_', ' ', $featureType));
+                                        $featureIconClass = $featureIcons[$featureType] ?? 'fa-circle-check';
                                     ?>
                                         <li class="feature-bullet-item">
-                                            <span class="feature-bullet-icon">✓</span>
+                                            <span class="feature-bullet-icon" aria-hidden="true">
+                                                <i class="fa-solid <?php echo htmlspecialchars($featureIconClass); ?>"></i>
+                                            </span>
                                             <span class="feature-bullet-text"><?php echo htmlspecialchars($featureLabel); ?></span>
                                         </li>
                                     <?php endforeach; ?>
@@ -1345,7 +1488,7 @@ if ($isAuthenticated && $user) {
             </div>
         </div>
 
-        <?php include 'blocks/footer.html'; ?>
+        <?php include __DIR__ . '/blocks/footer.html'; ?>
     </div>
 
     <!-- Photo Modal -->
@@ -1409,7 +1552,7 @@ if ($isAuthenticated && $user) {
                     <div class="contact-item-content">
                         <div class="contact-item-label">Телефон</div>
                         <div class="contact-item-value">
-                            <a href="tel:+34123456789">+34 123 456 789</a>
+                            <a href="tel:+34744644228">+34 744 644 228</a>
                         </div>
                     </div>
                 </div>
@@ -1422,7 +1565,7 @@ if ($isAuthenticated && $user) {
                     <div class="contact-item-content">
                         <div class="contact-item-label">Email</div>
                         <div class="contact-item-value">
-                            <a href="mailto:info@valencia-realestate.com">info@valencia-realestate.com</a>
+                            <a href="mailto:info@wesnagroup.com">info@wesnagroup.com</a>
                         </div>
                     </div>
                 </div>

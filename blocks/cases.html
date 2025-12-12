@@ -3,7 +3,7 @@
     <div class="text-content" style="align-items: center;">
         <div class="section-title" style="color: #60724F">Кейсы и отзывы</div>
         <div class="section-subtitle">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dictum molestie purus, in vehicula nisi hendrerit in. Vestibulum dapibus sodales mi ac malesuada
+            Реальные истории клиентов: дистанционный подбор, оформление ВНЖ, полное юридическое сопровождение сделки и помощь в адаптации после переезда.
         </div>
     </div>
     <div class="cases-container">
@@ -30,28 +30,28 @@
             </div>
         </div>
         <div class="cases-text">
-            <div class="cases-title">Lorem ipsum dolor sit ame</div>
+            <div class="cases-title">Семья Петровых — квартира в Рузафе</div>
             <div class="cases-details">
                 <div class="table">
                     <div class="table-row">
-                        <div class="table-label">Check-in date</div>
-                        <div class="table-value">Lorem ipsum dolor sit amet</div>
+                        <div class="table-label">Дата заселения</div>
+                        <div class="table-value">12 марта 2024</div>
                     </div>
                     <div class="table-row">
-                        <div class="table-label">Relocation duration</div>
-                        <div class="table-value">Lorem ipsum dolor sit amet</div>
+                        <div class="table-label">Срок релокации</div>
+                        <div class="table-value">2 недели от первого звонка до подписания</div>
                     </div>
                     <div class="table-row">
-                        <div class="table-label">City district</div>
-                        <div class="table-value">Lorem ipsum dolor sit amet</div>
+                        <div class="table-label">Район города</div>
+                        <div class="table-value">Рузофа, Валенсия — рядом с парком Турия</div>
                     </div>
                     <div class="table-row">
-                        <div class="table-label">Number of rooms</div>
-                        <div class="table-value">Lorem ipsum dolor sit amet</div>
+                        <div class="table-label">Количество комнат</div>
+                        <div class="table-value">3 спальни и гостиная</div>
                     </div>
                     <div class="table-row">
-                        <div class="table-label">Apartment area</div>
-                        <div class="table-value">Lorem ipsum dolor sit amet</div>
+                        <div class="table-label">Площадь квартиры</div>
+                        <div class="table-value">96 м² с террасой и парковкой</div>
                     </div>
                 </div>
                 <div class="feedback" id="feedback">
@@ -59,9 +59,9 @@
                         <div class="feedback-avatar"></div>
                         <div class="feedback-name">Name</div>
                     </div>
-                    <div class="feedback-text" id="feedback-text">I contacted the agency as a foreigner dreaming of moving to Valencia, and from the very first minutes, I felt that I had found the right people who understood my needs and fears. This is not just an agency that sells square meters—they are true guides who help you set up your life from scratch. The manager who worked with me was always available, patiently answered all of my questions, even the silly ones, and helped me not only find the perfect apartment but also sort out the paperwork and local specifics</div>
+                    <div class="feedback-text" id="feedback-text">Я обращалась в агентство как иностранка, мечтающая переехать в Валенсию. С первых минут почувствовала, что попала к людям, которые понимают мои запросы и страхи: это не просто продажа квадратных метров, а сопровождение жизни с нуля. Менеджер был на связи 24/7, терпеливо отвечал на вопросы, вёл переговоры, проверял документы и после покупки познакомил с проверенными подрядчиками.</div>
                     <div class="read-more" id="read-more-btn" onclick="toggleFeedback()">
-                        <div class="read-more-text" id="read-more-text">Read more</div>
+                        <div class="read-more-text" id="read-more-text">Читать отзыв</div>
                     </div>
                 </div>
             </div>
@@ -150,7 +150,7 @@ function toggleFeedback() {
         // Collapse
         feedback.classList.remove('expanded');
         feedbackText.classList.remove('expanded');
-        readMoreText.textContent = 'Read more';
+        readMoreText.textContent = 'Читать отзыв';
         
         // Clear timer if exists
         if (feedbackTimer) {
@@ -161,7 +161,7 @@ function toggleFeedback() {
         // Expand
         feedback.classList.add('expanded');
         feedbackText.classList.add('expanded');
-        readMoreText.textContent = 'Read less';
+        readMoreText.textContent = 'Свернуть';
         
         // Clear any existing timer
         if (feedbackTimer) {
@@ -172,7 +172,7 @@ function toggleFeedback() {
         feedbackTimer = setTimeout(() => {
             feedback.classList.remove('expanded');
             feedbackText.classList.remove('expanded');
-            readMoreText.textContent = 'Read more';
+            readMoreText.textContent = 'Читать отзыв';
             feedbackTimer = null;
         }, 30000);
     }

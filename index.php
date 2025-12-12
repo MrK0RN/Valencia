@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Недвижимость в Валенсии</title>
-    <link rel="stylesheet" href="styles.css?v=<?php echo filemtime('styles.css'); ?>">
-    <link rel="stylesheet" href="blocks/header.css?v=<?php echo filemtime('blocks/header.css'); ?>">
-    <link rel="stylesheet" href="blocks/hero.css?v=<?php echo filemtime('blocks/hero.css'); ?>">
-    <link rel="stylesheet" href="blocks/featured-listing.css?v=<?php echo filemtime('blocks/featured-listing.css'); ?>">
-    <link rel="stylesheet" href="blocks/steps.css?v=<?php echo filemtime('blocks/steps.css'); ?>">
-    <link rel="stylesheet" href="blocks/approach.css?v=<?php echo filemtime('blocks/approach.css'); ?>">
-    <link rel="stylesheet" href="blocks/benefits.css?v=<?php echo filemtime('blocks/benefits.css'); ?>">
-    <link rel="stylesheet" href="blocks/cases.css?v=<?php echo filemtime('blocks/cases.css'); ?>">
-    <link rel="stylesheet" href="blocks/footer.css?v=<?php echo filemtime('blocks/footer.css'); ?>">
+    <link rel="stylesheet" href="/styles.css?v=<?php echo filemtime('styles.css'); ?>">
+    <link rel="stylesheet" href="/blocks/header.css?v=<?php echo filemtime('blocks/header.css'); ?>">
+    <link rel="stylesheet" href="/blocks/hero.css?v=<?php echo filemtime('blocks/hero.css'); ?>">
+    <link rel="stylesheet" href="/blocks/featured-listing.css?v=<?php echo filemtime('blocks/featured-listing.css'); ?>">
+    <link rel="stylesheet" href="/blocks/steps.css?v=<?php echo filemtime('blocks/steps.css'); ?>">
+    <link rel="stylesheet" href="/blocks/approach.css?v=<?php echo filemtime('blocks/approach.css'); ?>">
+    <link rel="stylesheet" href="/blocks/benefits.css?v=<?php echo filemtime('blocks/benefits.css'); ?>">
+    <link rel="stylesheet" href="/blocks/cases.css?v=<?php echo filemtime('blocks/cases.css'); ?>">
+    <link rel="stylesheet" href="/blocks/why.css?v=<?php echo filemtime('blocks/why.css'); ?>">
+    <link rel="stylesheet" href="/blocks/footer.css?v=<?php echo filemtime('blocks/footer.css'); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -39,6 +40,11 @@
 
         <!-- Cases Section -->
         <?php include 'blocks/cases.html'; ?>
+
+        <!-- Why Section -->
+        <?php include 'blocks/why.html'; ?>
+
+        <?php include 'blocks/extra-ru.php'; ?>
 
         <?php include 'blocks/footer.html'; ?>
     </div>

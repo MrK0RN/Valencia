@@ -20,6 +20,32 @@ class Property extends Model
     const FEATURE_GARDEN = 'garden';
     const FEATURE_TERRACE = 'terrace';
     const FEATURE_STORAGE = 'storage';
+    const FEATURE_AIRZONE = 'airzone';
+    const FEATURE_CHILDREN_PLAY_AREA = 'children_play_area';
+    const FEATURE_BUILT_IN_WARDROBES = 'built_in_wardrobes';
+    const FEATURE_CLIMALIT = 'climalit_carpentry';
+    const FEATURE_FIREPLACE = 'fireplace';
+    const FEATURE_COUNTRY_CLUB = 'country_club';
+    const FEATURE_OPEN_KITCHEN = 'open_kitchen';
+    const FEATURE_WATER_SOFTENER = 'water_softener';
+    const FEATURE_HOME_AUTOMATION = 'home_automation';
+    const FEATURE_EXTERIOR = 'exterior';
+    const FEATURE_PRIVATE_GARAGE = 'private_garage';
+    const FEATURE_LAUNDRY_SPACE = 'laundry_space';
+    const FEATURE_SOLAR_PANELS = 'solar_panels';
+    const FEATURE_PARQUET = 'parquet';
+    const FEATURE_COMMUNAL_POOL = 'communal_pool';
+    const FEATURE_PRIVATE_POOL = 'private_pool';
+    const FEATURE_PORCH = 'porch';
+    const FEATURE_REINFORCED_DOOR = 'reinforced_door';
+    const FEATURE_ELECTRIC_CHARGING_POINT = 'electric_charging_point';
+    const FEATURE_AEROTHERMAL = 'aerothermal_system';
+    const FEATURE_UNDERFLOOR_HEATING = 'underfloor_heating';
+    const FEATURE_ENSUITE = 'ensuite_bathroom';
+    const FEATURE_DRESSING_ROOM = 'dressing_room';
+    const FEATURE_VIDEO_INTERCOM = 'video_intercom';
+    const FEATURE_MOUNTAIN_VIEW = 'mountain_view';
+    const FEATURE_COMMUNAL_AREA = 'communal_area';
 
     /**
      * Переопределяем имя таблицы (если нужно)
@@ -29,6 +55,42 @@ class Property extends Model
     protected static function getTableName(): string
     {
         return 'properties';
+    }
+
+    /**
+     * Вернуть локализованное название
+     *
+     * @param string $locale ru|en
+     * @return string
+     */
+    public function getLocalizedTitle(string $locale = 'ru'): string
+    {
+        $titleEn = trim($this->attributes['title_en'] ?? '');
+        $titleRu = trim($this->attributes['title'] ?? '');
+
+        if ($locale === 'en' && $titleEn !== '') {
+            return $titleEn;
+        }
+
+        return $titleRu !== '' ? $titleRu : 'Без названия';
+    }
+
+    /**
+     * Вернуть локализованное описание
+     *
+     * @param string $locale ru|en
+     * @return string|null
+     */
+    public function getLocalizedDescription(string $locale = 'ru'): ?string
+    {
+        $descEn = trim($this->attributes['description_en'] ?? '');
+        $descRu = trim($this->attributes['description'] ?? '');
+
+        if ($locale === 'en' && $descEn !== '') {
+            return $descEn;
+        }
+
+        return $descRu !== '' ? $descRu : null;
     }
 
     /**
@@ -101,11 +163,117 @@ class Property extends Model
             }
         }
 
+        $proximityFields = [
+            'sea_distance_meters' => 'Расстояние до моря (м)',
+            'sea_distance_minutes' => 'До моря (мин)',
+            'metro_distance_meters' => 'Расстояние до метро (м)',
+            'metro_distance_minutes' => 'До метро (мин)',
+        ];
+
+        foreach ($proximityFields as $field => $label) {
+            if (isset($this->attributes[$field]) && $this->attributes[$field] !== null) {
+                if (!is_numeric($this->attributes[$field])) {
+                    $errors[] = $label . ' должно быть числом';
+                } elseif ($this->attributes[$field] < 0) {
+                    $errors[] = $label . ' не может быть отрицательным';
+                }
+            }
+        }
+
         if (!empty($errors)) {
             throw new Exception('Ошибки валидации: ' . implode(', ', $errors));
         }
 
         return true;
+    }
+
+    /**
+     * Карта доступных характеристик (удобств) с локализацией
+     *
+     * @param string $locale ru|en
+     * @return array<string,string>
+     */
+    public static function getFeatureLabels(string $locale = 'ru'): array
+    {
+        $ru = [
+            self::FEATURE_AIR_CONDITIONING => 'Кондиционирование воздуха',
+            self::FEATURE_AIRZONE => 'Система Airzone',
+            self::FEATURE_CHILDREN_PLAY_AREA => 'Детская игровая площадка',
+            self::FEATURE_BUILT_IN_WARDROBES => 'Встроенные шкафы',
+            self::FEATURE_ELEVATOR => 'Лифт',
+            self::FEATURE_CLIMALIT => 'Столярка Climalit (двойные стеклопакеты)',
+            self::FEATURE_FIREPLACE => 'Камин',
+            self::FEATURE_COUNTRY_CLUB => 'Кантри-клуб / клубная зона',
+            self::FEATURE_OPEN_KITCHEN => 'Кухня, объединённая с гостиной',
+            self::FEATURE_WATER_SOFTENER => 'Система очистки/смягчения воды',
+            self::FEATURE_HOME_AUTOMATION => 'Умный дом',
+            self::FEATURE_EXTERIOR => 'Внешняя отделка / фасадные решения',
+            self::FEATURE_PRIVATE_GARAGE => 'Частный гараж',
+            self::FEATURE_GARDEN => 'Частный сад',
+            self::FEATURE_LAUNDRY_SPACE => 'Постирочная зона',
+            self::FEATURE_SOLAR_PANELS => 'Солнечные панели',
+            self::FEATURE_PARQUET => 'Паркет',
+            self::FEATURE_COMMUNAL_POOL => 'Общий бассейн',
+            self::FEATURE_PRIVATE_POOL => 'Частный бассейн',
+            self::FEATURE_PORCH => 'Крытая терраса / портик',
+            self::FEATURE_REINFORCED_DOOR => 'Усиленная входная дверь',
+            self::FEATURE_ELECTRIC_CHARGING_POINT => 'Точка для зарядки электромобиля',
+            self::FEATURE_AEROTHERMAL => 'Аэротермальная система',
+            self::FEATURE_UNDERFLOOR_HEATING => 'Тёплый пол',
+            self::FEATURE_ENSUITE => 'Главная спальня с санузлом (suite)',
+            self::FEATURE_TERRACE => 'Терраса',
+            self::FEATURE_DRESSING_ROOM => 'Гардеробная',
+            self::FEATURE_VIDEO_INTERCOM => 'Видеодомофон',
+            self::FEATURE_MOUNTAIN_VIEW => 'Вид на горы',
+            self::FEATURE_COMMUNAL_AREA => 'Общая территория / коммунальная зона',
+            self::FEATURE_BALCONY => 'Балкон',
+            self::FEATURE_PARKING => 'Парковка',
+            self::FEATURE_FURNISHED => 'Мебель',
+            self::FEATURE_HEATING => 'Отопление',
+            self::FEATURE_POOL => 'Бассейн (старый тип)',
+            self::FEATURE_STORAGE => 'Кладовая',
+        ];
+
+        $en = [
+            self::FEATURE_AIR_CONDITIONING => 'Air conditioning',
+            self::FEATURE_AIRZONE => 'Airzone system',
+            self::FEATURE_CHILDREN_PLAY_AREA => 'Children’s play area',
+            self::FEATURE_BUILT_IN_WARDROBES => 'Built-in wardrobes',
+            self::FEATURE_ELEVATOR => 'Lift',
+            self::FEATURE_CLIMALIT => 'Climalit carpentry (double glazing)',
+            self::FEATURE_FIREPLACE => 'Fireplace',
+            self::FEATURE_COUNTRY_CLUB => 'Country club / club area',
+            self::FEATURE_OPEN_KITCHEN => 'Kitchen open to the living room',
+            self::FEATURE_WATER_SOFTENER => 'Water softener',
+            self::FEATURE_HOME_AUTOMATION => 'Home automation',
+            self::FEATURE_EXTERIOR => 'Exterior / facade solutions',
+            self::FEATURE_PRIVATE_GARAGE => 'Private garage',
+            self::FEATURE_GARDEN => 'Private garden',
+            self::FEATURE_LAUNDRY_SPACE => 'Laundry space',
+            self::FEATURE_SOLAR_PANELS => 'Solar panels',
+            self::FEATURE_PARQUET => 'Parquet',
+            self::FEATURE_COMMUNAL_POOL => 'Communal swimming pool',
+            self::FEATURE_PRIVATE_POOL => 'Private pool',
+            self::FEATURE_PORCH => 'Porch / covered terrace',
+            self::FEATURE_REINFORCED_DOOR => 'Reinforced door',
+            self::FEATURE_ELECTRIC_CHARGING_POINT => 'Electric recharging point',
+            self::FEATURE_AEROTHERMAL => 'Aerothermal system',
+            self::FEATURE_UNDERFLOOR_HEATING => 'Under-floor heating',
+            self::FEATURE_ENSUITE => 'Suite with bathroom',
+            self::FEATURE_TERRACE => 'Terrace',
+            self::FEATURE_DRESSING_ROOM => 'Dressing room',
+            self::FEATURE_VIDEO_INTERCOM => 'Video intercom system',
+            self::FEATURE_MOUNTAIN_VIEW => 'Mountain view',
+            self::FEATURE_COMMUNAL_AREA => 'Communal area',
+            self::FEATURE_BALCONY => 'Balcony',
+            self::FEATURE_PARKING => 'Parking',
+            self::FEATURE_FURNISHED => 'Furnished',
+            self::FEATURE_HEATING => 'Heating',
+            self::FEATURE_POOL => 'Pool (legacy)',
+            self::FEATURE_STORAGE => 'Storage room',
+        ];
+
+        return $locale === 'en' ? $en : $ru;
     }
 
     /**

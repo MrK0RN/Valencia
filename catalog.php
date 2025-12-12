@@ -1,6 +1,41 @@
 <?php
 require_once __DIR__ . '/classes/Property.php';
 
+$locale = 'ru';
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+if (isset($_GET['lang']) && $_GET['lang'] === 'en') {
+    $locale = 'en';
+} elseif (strpos($requestUri, '/en/') === 0 || rtrim($requestUri, '/') === '/en') {
+    $locale = 'en';
+}
+
+$translations = [
+    'ru' => [
+        'catalog_title' => 'Каталог недвижимости',
+        'catalog_subtitle' => 'Найдите идеальное жилье в Валенсии',
+        'found' => 'Найдено объектов',
+        'page_of' => 'Страница',
+        'of' => 'из',
+        'no_properties' => 'В данный момент нет доступных объектов недвижимости.',
+        'back' => 'Назад',
+        'forward' => 'Вперед',
+    ],
+    'en' => [
+        'catalog_title' => 'Property catalog',
+        'catalog_subtitle' => 'Find the perfect home in Valencia',
+        'found' => 'Found listings',
+        'page_of' => 'Page',
+        'of' => 'of',
+        'no_properties' => 'No properties are available right now.',
+        'back' => 'Back',
+        'forward' => 'Next',
+    ],
+];
+
+$t = function (string $key) use ($translations, $locale) {
+    return $translations[$locale][$key] ?? ($translations['ru'][$key] ?? $key);
+};
+
 // Пагинация
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $perPage = 12;
@@ -10,17 +45,23 @@ $offset = ($page - 1) * $perPage;
 $properties = Property::getActive($perPage, $offset);
 $totalCount = Property::getActiveCount();
 $totalPages = ceil($totalCount / $perPage);
+
+$pageUrl = function (int $pageNumber) use ($locale): string {
+    return $locale === 'en'
+        ? "/catalog?lang=en&page={$pageNumber}"
+        : "/catalog?page={$pageNumber}";
+};
 ?>
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<?php echo htmlspecialchars($locale); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог недвижимости - Валенсия</title>
-    <link rel="stylesheet" href="styles.css?v=<?php echo filemtime('styles.css'); ?>">
-    <link rel="stylesheet" href="blocks/header.css?v=<?php echo filemtime('blocks/header.css'); ?>">
-    <link rel="stylesheet" href="blocks/featured-listing.css?v=<?php echo filemtime('blocks/featured-listing.css'); ?>">
-    <link rel="stylesheet" href="blocks/footer.css?v=<?php echo filemtime('blocks/footer.css'); ?>">
+    <title><?php echo htmlspecialchars($t('catalog_title')); ?> - <?php echo $locale === 'en' ? 'Valencia' : 'Валенсия'; ?></title>
+    <link rel="stylesheet" href="/styles.css?v=<?php echo filemtime(__DIR__ . '/styles.css'); ?>">
+    <link rel="stylesheet" href="/blocks/header.css?v=<?php echo filemtime(__DIR__ . '/blocks/header.css'); ?>">
+    <link rel="stylesheet" href="/blocks/featured-listing.css?v=<?php echo filemtime(__DIR__ . '/blocks/featured-listing.css'); ?>">
+    <link rel="stylesheet" href="/blocks/footer.css?v=<?php echo filemtime(__DIR__ . '/blocks/footer.css'); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -135,24 +176,29 @@ $totalPages = ceil($totalCount / $perPage);
 <body>
     <div class="desktop">
         <!-- Header -->
-        <?php include 'blocks/header.html'; ?>
+        <?php 
+            $headerFile = $locale === 'en' 
+                ? __DIR__ . '/blocks/header-en.html' 
+                : __DIR__ . '/blocks/header.html';
+            include $headerFile;
+        ?>
 
         <!-- Catalog Section -->
         <div class="section">
             <div class="catalog-header">
-                <h1 class="catalog-title">Каталог недвижимости</h1>
-                <p class="catalog-subtitle">Найдите идеальное жилье в Валенсии</p>
+                <h1 class="catalog-title"><?php echo htmlspecialchars($t('catalog_title')); ?></h1>
+                <p class="catalog-subtitle"><?php echo htmlspecialchars($t('catalog_subtitle')); ?></p>
                 <div class="catalog-stats">
-                    Найдено объектов: <?php echo $totalCount; ?>
+                    <?php echo htmlspecialchars($t('found')); ?>: <?php echo $totalCount; ?>
                     <?php if ($totalPages > 1): ?>
-                        | Страница <?php echo $page; ?> из <?php echo $totalPages; ?>
+                        | <?php echo htmlspecialchars($t('page_of')); ?> <?php echo $page; ?> <?php echo htmlspecialchars($t('of')); ?> <?php echo $totalPages; ?>
                     <?php endif; ?>
                 </div>
             </div>
 
             <?php if (empty($properties)): ?>
                 <div class="text-content" style="text-align: center;">
-                    <p style="font-size: 18px; color: #666;">В данный момент нет доступных объектов недвижимости.</p>
+                    <p style="font-size: 18px; color: #666;"><?php echo htmlspecialchars($t('no_properties')); ?></p>
                 </div>
             <?php else: ?>
                 <div class="catalog-grid">
@@ -164,17 +210,20 @@ $totalPages = ceil($totalCount / $perPage);
                         } else {
                             $imageSrc = '/assets/img/wp14994042-valencia-4k-wallpapers.png';
                         }
-                        $imageAlt = htmlspecialchars($property->title ?? 'Property');
-                        $title = htmlspecialchars($property->title ?? 'Без названия');
-                        $description = htmlspecialchars($property->description ?? '');
+                        $imageAlt = htmlspecialchars($property->getLocalizedTitle($locale) ?? 'Property');
+                        $title = htmlspecialchars($property->getLocalizedTitle($locale) ?? 'Без названия');
+                        $description = htmlspecialchars($property->getLocalizedDescription($locale) ?? '');
                         // Обрезаем описание если слишком длинное
                         if (mb_strlen($description) > 100) {
                             $description = mb_substr($description, 0, 97) . '...';
                         }
                         $price = $property->getFormattedPrice();
                         $propertyId = $property->id ?? 0;
+                        $propertyLink = $locale === 'en'
+                            ? "/en/property.php?id={$propertyId}"
+                            : "/property/{$propertyId}";
                     ?>
-                        <a href="/property/<?php echo $propertyId; ?>" class="card-link">
+                        <a href="<?php echo $propertyLink; ?>" class="card-link">
                             <div class="card">
                                 <img class="card-img" src="<?php echo $imageSrc; ?>" alt="<?php echo $imageAlt; ?>" loading="lazy">
                                 <div class="card-text">
@@ -216,9 +265,9 @@ $totalPages = ceil($totalCount / $perPage);
                 <?php if ($totalPages > 1): ?>
                     <div class="pagination">
                         <?php if ($page > 1): ?>
-                            <a href="/catalog?page=<?php echo $page - 1; ?>">&laquo; Назад</a>
+                            <a href="<?php echo $pageUrl($page - 1); ?>">&laquo; <?php echo htmlspecialchars($t('back')); ?></a>
                         <?php else: ?>
-                            <span class="disabled">&laquo; Назад</span>
+                            <span class="disabled">&laquo; <?php echo htmlspecialchars($t('back')); ?></span>
                         <?php endif; ?>
 
                         <?php
@@ -226,7 +275,7 @@ $totalPages = ceil($totalCount / $perPage);
                         $endPage = min($totalPages, $page + 2);
                         
                         if ($startPage > 1): ?>
-                            <a href="/catalog?page=1">1</a>
+                            <a href="<?php echo $pageUrl(1); ?>">1</a>
                             <?php if ($startPage > 2): ?>
                                 <span>...</span>
                             <?php endif; ?>
@@ -236,7 +285,7 @@ $totalPages = ceil($totalCount / $perPage);
                             <?php if ($i == $page): ?>
                                 <span class="current"><?php echo $i; ?></span>
                             <?php else: ?>
-                                <a href="/catalog?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                <a href="<?php echo $pageUrl($i); ?>"><?php echo $i; ?></a>
                             <?php endif; ?>
                         <?php endfor; ?>
 
@@ -244,20 +293,20 @@ $totalPages = ceil($totalCount / $perPage);
                             <?php if ($endPage < $totalPages - 1): ?>
                                 <span>...</span>
                             <?php endif; ?>
-                            <a href="/catalog?page=<?php echo $totalPages; ?>"><?php echo $totalPages; ?></a>
+                            <a href="<?php echo $pageUrl($totalPages); ?>"><?php echo $totalPages; ?></a>
                         <?php endif; ?>
 
                         <?php if ($page < $totalPages): ?>
-                            <a href="/catalog?page=<?php echo $page + 1; ?>">Вперед &raquo;</a>
+                            <a href="<?php echo $pageUrl($page + 1); ?>"><?php echo htmlspecialchars($t('forward')); ?> &raquo;</a>
                         <?php else: ?>
-                            <span class="disabled">Вперед &raquo;</span>
+                            <span class="disabled"><?php echo htmlspecialchars($t('forward')); ?> &raquo;</span>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
         </div>
 
-        <?php include 'blocks/footer.html'; ?>
+        <?php include __DIR__ . '/blocks/footer.html'; ?>
     </div>
     <script>
         // Гамбургер-меню

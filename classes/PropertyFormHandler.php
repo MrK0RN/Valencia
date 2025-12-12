@@ -32,10 +32,15 @@ class PropertyFormHandler
         
         $propertyData = [
             'title' => $title,
+            'title_en' => !empty($data['title_en']) ? trim($data['title_en']) : null,
             'price' => $price,
             'address_full' => !empty($data['address_full']) ? trim($data['address_full']) : null,
             'address_district' => !empty($data['address_district']) ? trim($data['address_district']) : null,
             'show_exact_address' => isset($data['show_exact_address']) && $data['show_exact_address'] === '1' ? true : false,
+            'sea_distance_meters' => isset($data['sea_distance_meters']) && $data['sea_distance_meters'] !== '' && is_numeric($data['sea_distance_meters']) ? (int)$data['sea_distance_meters'] : null,
+            'sea_distance_minutes' => isset($data['sea_distance_minutes']) && $data['sea_distance_minutes'] !== '' && is_numeric($data['sea_distance_minutes']) ? (int)$data['sea_distance_minutes'] : null,
+            'metro_distance_meters' => isset($data['metro_distance_meters']) && $data['metro_distance_meters'] !== '' && is_numeric($data['metro_distance_meters']) ? (int)$data['metro_distance_meters'] : null,
+            'metro_distance_minutes' => isset($data['metro_distance_minutes']) && $data['metro_distance_minutes'] !== '' && is_numeric($data['metro_distance_minutes']) ? (int)$data['metro_distance_minutes'] : null,
             'area_total' => !empty($data['area_total']) && is_numeric($data['area_total']) ? floatval($data['area_total']) : null,
             'area_living' => !empty($data['area_living']) && is_numeric($data['area_living']) ? floatval($data['area_living']) : null,
             'area_kitchen' => !empty($data['area_kitchen']) && is_numeric($data['area_kitchen']) ? floatval($data['area_kitchen']) : null,
@@ -43,6 +48,7 @@ class PropertyFormHandler
             'total_floors' => !empty($data['total_floors']) && is_numeric($data['total_floors']) ? intval($data['total_floors']) : null,
             'rooms' => !empty($data['rooms']) && is_numeric($data['rooms']) ? intval($data['rooms']) : null,
             'description' => !empty($data['description']) ? trim($data['description']) : null,
+            'description_en' => !empty($data['description_en']) ? trim($data['description_en']) : null,
             'video_url' => !empty($data['video_url']) ? trim($data['video_url']) : null,
             'lat' => !empty($data['lat']) && is_numeric($data['lat']) ? floatval($data['lat']) : null,
             'lng' => !empty($data['lng']) && is_numeric($data['lng']) ? floatval($data['lng']) : null,
@@ -59,18 +65,7 @@ class PropertyFormHandler
 
         // Обработка характеристик
         $features = [];
-        $featureTypes = [
-            Property::FEATURE_BALCONY,
-            Property::FEATURE_PARKING,
-            Property::FEATURE_ELEVATOR,
-            Property::FEATURE_FURNISHED,
-            Property::FEATURE_AIR_CONDITIONING,
-            Property::FEATURE_HEATING,
-            Property::FEATURE_POOL,
-            Property::FEATURE_GARDEN,
-            Property::FEATURE_TERRACE,
-            Property::FEATURE_STORAGE,
-        ];
+        $featureTypes = array_keys(Property::getFeatureLabels());
 
         foreach ($featureTypes as $type) {
             if (isset($data['features'][$type]) && $data['features'][$type] === '1') {

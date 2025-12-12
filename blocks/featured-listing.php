@@ -3,15 +3,27 @@ require_once __DIR__ . '/../classes/Property.php';
 
 // Получаем featured объекты
 $featuredProperties = Property::getFeatured();
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+$isEn = (strpos($requestUri, '/en/') === 0) || (rtrim($requestUri, '/') === '/en');
+$locale = $isEn ? 'en' : 'ru';
+
+$titleText = $isEn ? 'Featured listing' : 'Избранные объекты';
+$subtitleText = $isEn
+    ? 'Our houses are synonymous of well-being, comfort, and quality of life. In our portfolio you will find luxury properties for sale and for rent in Valencia, with excellent locations, and with designs and services that make them truly unique and special'
+    : 'Наши дома — это комфорт, качество жизни и внимание к деталям. В портфолио — лучшие объекты для покупки и аренды в Валенсии: отличные локации, продуманный дизайн и сервисы, которые делают их по-настоящему особенными.';
 ?>
 <!-- Featured Listing -->
 <div class="section">
     <div class="text-content" style="align-items: center;">
         <div class="section-title">
-            <span style="color: #60724F">Featured&nbsp;</span><span style="color: black"> listing</span>
+            <?php if ($isEn): ?>
+                <span style="color: #60724F">Featured&nbsp;</span><span style="color: black"> listing</span>
+            <?php else: ?>
+                <span style="color: #60724F"><?php echo htmlspecialchars($titleText); ?></span>
+            <?php endif; ?>
         </div>
         <div class="section-subtitle">
-            Our houses are synonymous of well-being, comfort, and quality of life. In our portfolio you will find luxury properties for sale and for rent in Valencia, with excellent locations, and with designs and services that make them truly unique and special
+            <?php echo htmlspecialchars($subtitleText); ?>
         </div>
     </div>
     <div class="frame-6">
@@ -51,17 +63,20 @@ $featuredProperties = Property::getFeatured();
                     } else {
                         $imageSrc = '/assets/img/wp14994042-valencia-4k-wallpapers.png';
                     }
-                    $imageAlt = htmlspecialchars($property->title ?? 'Property');
-                    $title = htmlspecialchars($property->title ?? 'Без названия');
-                    $description = htmlspecialchars($property->description ?? '');
+                    $imageAlt = htmlspecialchars($property->getLocalizedTitle($locale) ?? 'Property');
+                    $title = htmlspecialchars($property->getLocalizedTitle($locale) ?? 'Без названия');
+                    $description = htmlspecialchars($property->getLocalizedDescription($locale) ?? '');
                     // Обрезаем описание если слишком длинное
                     if (mb_strlen($description) > 100) {
                         $description = mb_substr($description, 0, 97) . '...';
                     }
                     $price = $property->getFormattedPrice();
                     $propertyId = $property->id ?? 0;
+                    $propertyLink = $isEn
+                        ? "/en/property.php?id={$propertyId}"
+                        : "/property/{$propertyId}";
                 ?>
-                    <a href="/property/<?php echo $propertyId; ?>" class="card-link">
+                    <a href="<?php echo $propertyLink; ?>" class="card-link">
                         <div class="card">
                             <img class="card-img" src="<?php echo $imageSrc; ?>" alt="<?php echo $imageAlt; ?>" loading="lazy">
                             <div class="card-text">
@@ -101,7 +116,9 @@ $featuredProperties = Property::getFeatured();
             <?php endif; ?>
         </div>
     </div>
-    <a href="/catalog" class="btn btn-large">Показать еще</a>
+    <a href="<?php echo $isEn ? '/en/catalog.php' : '/catalog'; ?>" class="btn btn-large">
+        <?php echo $isEn ? 'Show more' : 'Показать еще'; ?>
+    </a>
 </div>
 
 <script>

@@ -42,6 +42,7 @@ $formData = PropertyFormHandler::getFormData($property);
 $csrfToken = Session::generateCsrfToken();
 $mapsConfig = require __DIR__ . '/../../config/maps.php';
 $googleMapsApiKey = $mapsConfig['google_maps_api_key'];
+$featureLabels = Property::getFeatureLabels('ru');
 include __DIR__ . '/../includes/header.php';
 ?>
 
@@ -72,6 +73,13 @@ include __DIR__ . '/../includes/header.php';
             </div>
 
             <div class="form-group">
+                <label for="title_en">Название объекта (EN)</label>
+                <input type="text" id="title_en" name="title_en"
+                       value="<?php echo htmlspecialchars($property->title_en ?? ''); ?>"
+                       placeholder="Title in English">
+            </div>
+
+            <div class="form-group">
                 <label for="price">Цена (€) *</label>
                 <input type="number" id="price" name="price" step="0.01" min="0" 
                        value="<?php echo $property->price; ?>" required>
@@ -80,6 +88,11 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-group">
                 <label for="description">Описание</label>
                 <textarea id="description" name="description" rows="5"><?php echo htmlspecialchars($property->description ?? ''); ?></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="description_en">Описание (EN)</label>
+                <textarea id="description_en" name="description_en" rows="5" placeholder="Description in English"><?php echo htmlspecialchars($property->description_en ?? ''); ?></textarea>
             </div>
 
             <div class="form-group">
@@ -135,6 +148,28 @@ include __DIR__ . '/../includes/header.php';
         </div>
 
         <div class="form-section">
+            <h2>Близость</h2>
+            <div class="form-grid two-columns">
+                <div class="form-group">
+                    <label for="sea_distance_meters">До моря (метры)</label>
+                    <input type="number" id="sea_distance_meters" name="sea_distance_meters" min="0" step="1" value="<?php echo htmlspecialchars($property->sea_distance_meters ?? ''); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="sea_distance_minutes">До моря (минуты)</label>
+                    <input type="number" id="sea_distance_minutes" name="sea_distance_minutes" min="0" step="1" value="<?php echo htmlspecialchars($property->sea_distance_minutes ?? ''); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="metro_distance_meters">До метро (метры)</label>
+                    <input type="number" id="metro_distance_meters" name="metro_distance_meters" min="0" step="1" value="<?php echo htmlspecialchars($property->metro_distance_meters ?? ''); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="metro_distance_minutes">До метро (минуты)</label>
+                    <input type="number" id="metro_distance_minutes" name="metro_distance_minutes" min="0" step="1" value="<?php echo htmlspecialchars($property->metro_distance_minutes ?? ''); ?>">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
             <h2>Характеристики</h2>
             
             <div class="form-group">
@@ -180,18 +215,6 @@ include __DIR__ . '/../includes/header.php';
             <div class="features-grid">
                 <?php 
                 $features = $formData['features'];
-                $featureLabels = [
-                    Property::FEATURE_BALCONY => 'Балкон',
-                    Property::FEATURE_PARKING => 'Парковка',
-                    Property::FEATURE_ELEVATOR => 'Лифт',
-                    Property::FEATURE_FURNISHED => 'Мебель',
-                    Property::FEATURE_AIR_CONDITIONING => 'Кондиционер',
-                    Property::FEATURE_HEATING => 'Отопление',
-                    Property::FEATURE_POOL => 'Бассейн',
-                    Property::FEATURE_GARDEN => 'Сад',
-                    Property::FEATURE_TERRACE => 'Терраса',
-                    Property::FEATURE_STORAGE => 'Кладовая',
-                ];
                 foreach ($featureLabels as $type => $label): 
                     $checked = isset($features[$type]) && $features[$type] === '1' ? 'checked' : '';
                 ?>
