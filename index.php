@@ -29,14 +29,17 @@
         <!-- Featured Listing -->
         <?php include 'blocks/featured-listing.php'; ?>
 
+        <!-- Benefits Section -->
+        <?php include 'blocks/benefits.html'; ?>
+
         <!-- Steps Section -->
         <?php include 'blocks/steps.html'; ?>
 
+        <!-- Stats Section -->
+        <?php include 'blocks/stats.html'; ?>
+
         <!-- Approach Section -->
         <?php include 'blocks/approach.html'; ?>
-
-        <!-- Benefits Section -->
-        <?php include 'blocks/benefits.html'; ?>
 
         <!-- Cases Section -->
         <?php include 'blocks/cases.html'; ?>
@@ -44,7 +47,8 @@
         <!-- Why Section -->
         <?php include 'blocks/why.html'; ?>
 
-        <?php include 'blocks/extra-ru.php'; ?>
+        <!-- Contact Section -->
+        <?php include 'blocks/contact-ru.php'; ?>
 
         <?php include 'blocks/footer.html'; ?>
     </div>

@@ -9,8 +9,8 @@ $locale = $isEn ? 'en' : 'ru';
 
 $titleText = $isEn ? 'Featured listing' : 'Избранные объекты';
 $subtitleText = $isEn
-    ? 'Our houses are synonymous of well-being, comfort, and quality of life. In our portfolio you will find luxury properties for sale and for rent in Valencia, with excellent locations, and with designs and services that make them truly unique and special'
-    : 'Наши дома — это комфорт, качество жизни и внимание к деталям. В портфолио — лучшие объекты для покупки и аренды в Валенсии: отличные локации, продуманный дизайн и сервисы, которые делают их по-настоящему особенными.';
+    ? 'Luxury properties for sale and rent in Valencia with excellent locations'
+    : 'Лучшие объекты для покупки и аренды в Валенсии с отличными локациями';
 ?>
 <!-- Featured Listing -->
 <div class="section">

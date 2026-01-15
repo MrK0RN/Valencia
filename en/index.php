@@ -26,17 +26,20 @@
 
         <?php include __DIR__ . '/../blocks/featured-listing.php'; ?>
 
+        <?php include __DIR__ . '/../blocks/benefits-en.html'; ?>
+
         <?php include __DIR__ . '/../blocks/steps-en.html'; ?>
 
-        <?php include __DIR__ . '/../blocks/approach-en.html'; ?>
+        <?php include __DIR__ . '/../blocks/stats-en.html'; ?>
 
-        <?php include __DIR__ . '/../blocks/benefits-en.html'; ?>
+        <?php include __DIR__ . '/../blocks/approach-en.html'; ?>
 
         <?php include __DIR__ . '/../blocks/cases-en.html'; ?>
 
         <?php include __DIR__ . '/../blocks/why-en.html'; ?>
 
-        <?php include __DIR__ . '/../blocks/extra-en.php'; ?>
+        <!-- Contact Section -->
+        <?php include __DIR__ . '/../blocks/contact-en.php'; ?>
 
         <?php include __DIR__ . '/../blocks/footer.html'; ?>
     </div>
